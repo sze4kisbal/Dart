@@ -1,84 +1,47 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const SzamKitalaloApp());
+  runApp(const GombokApp());
 }
 
-class SzamKitalaloApp extends StatelessWidget {
-  const SzamKitalaloApp({super.key});
+class GombokApp extends StatelessWidget {
+  const GombokApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Szamkitalalo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const JatekKepernyo(),
+      debugShowCheckedModeBanner: false,
+      home: const FoOldal(),
     );
   }
 }
 
-class JatekKepernyo extends StatefulWidget {
-  const JatekKepernyo({super.key});
+class FoOldal extends StatefulWidget {
+  const FoOldal({super.key});
 
   @override
-  State<JatekKepernyo> createState() => _JatekKepernyoState();
+  State<FoOldal> createState() => _FoOldalState();
 }
 
-class _JatekKepernyoState extends State<JatekKepernyo> {
-  final TextEditingController tippController = TextEditingController();
+class _FoOldalState extends State<FoOldal> {
+  bool kek = true;
+  int szamlalo = 0;
 
-  int titkosSzam = Random().nextInt(100) + 1;
-  String uzenet = "Tippelj egy szamot 1 es 100 kozott!";
-  int probalkozasok = 0;
-  bool jatekVege = false;
-
-  void tippEllenorzes() {
-    if (jatekVege) return;
-
-    String bevitt = tippController.text;
-
-    if (bevitt.isEmpty) {
-      setState(() {
-        uzenet = "Adj meg egy szamot!";
-      });
-      return;
-    }
-
-    int? tipp = int.tryParse(bevitt);
-
-    if (tipp == null) {
-      setState(() {
-        uzenet = "Csak szamot adhatsz meg!";
-      });
-      return;
-    }
-
+  void szinValtas() {
     setState(() {
-      probalkozasok++;
-
-      if (tipp < titkosSzam) {
-        uzenet = "Nagyobb szamra gondoltam!";
-      } else if (tipp > titkosSzam) {
-        uzenet = "Kisebb szamra gondoltam!";
-      } else {
-        uzenet = "Eltalaltad $probalkozasok probalkozasbol!";
-        jatekVege = true;
-      }
+      kek = !kek;
     });
-
-    tippController.clear();
   }
 
-  void ujJatek() {
+  void novel() {
     setState(() {
-      titkosSzam = Random().nextInt(100) + 1;
-      probalkozasok = 0;
-      uzenet = "Uj jatek indult!";
-      jatekVege = false;
-      tippController.clear();
+      szamlalo++;
+    });
+  }
+
+  void csokkent() {
+    setState(() {
+      szamlalo--;
     });
   }
 
@@ -86,54 +49,43 @@ class _JatekKepernyoState extends State<JatekKepernyo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Szamkitalalo Jatek"),
-        centerTitle: true,
+        title: const Text('Gombos app'),
+        backgroundColor: Colors.blue,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              uzenet,
-              style: const TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
+            Container(
+              width: 120,
+              height: 120,
+              color: kek ? Colors.blue : Colors.red,
             ),
-
-            const SizedBox(height: 30),
-
-            TextField(
-              controller: tippController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Tipp",
-              ),
-            ),
-
             const SizedBox(height: 20),
-
             ElevatedButton(
-              onPressed: tippEllenorzes,
-              child: const Text("Tipp elkuldese"),
+              onPressed: szinValtas,
+              child: const Text('Szin valtasa'),
             ),
-
-            const SizedBox(height: 20),
-
+            const SizedBox(height: 40),
             Text(
-              "Probalkozasok: $probalkozasok",
-              style: const TextStyle(fontSize: 16),
+              'Szamlalo: $szamlalo',
+              style: const TextStyle(fontSize: 28),
             ),
-
-            const SizedBox(height: 30),
-
-            ElevatedButton(
-              onPressed: ujJatek,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
-              child: const Text("Uj jatek"),
-            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: novel,
+                  child: const Text('+'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: csokkent,
+                  child: const Text('-'),
+                ),
+              ],
+            )
           ],
         ),
       ),
